@@ -203,10 +203,20 @@ public class NetworkBasedTransportCosts implements VehicleRoutingTransportCosts{
 	static class TransportData {
 		public final double transportCosts;
 		public final double transportTime;
+		public final double transportDistance_m;
+
 		public TransportData(double transportCosts, double transportTime) {
 			super();
 			this.transportCosts = transportCosts;
 			this.transportTime = transportTime;
+			this.transportDistance_m = Double.MIN_VALUE; // not set
+		}
+
+		public TransportData(double transportCosts, double transportTime, double transportDistance_m) {
+			super();
+			this.transportCosts = transportCosts;
+			this.transportTime = transportTime;
+			this.transportDistance_m = transportDistance_m;
 		}
 		
 	}
@@ -564,9 +574,22 @@ public class NetworkBasedTransportCosts implements VehicleRoutingTransportCosts{
 //			if(path == null) return Double.MAX_VALUE;
 			double additionalCostTo = travelDisutility.getLinkTravelDisutility(toLink, departureTime+path.travelTime, null, matsimVehicle);
 			double additionalTimeTo = travelTime.getLinkTravelTime(toLink, departureTime+path.travelTime, null, matsimVehicle);
+			double additionalDistanceTo = toLink.getLength();
+			double travelDistanceInMeter = 0.0;
+			for (Link link: path.links){
+				travelDistanceInMeter = travelDistanceInMeter + link.getLength();
+			}
 			transportTime = path.travelTime;
-			TransportData newData = new TransportData(path.travelCost+additionalCostTo,path.travelTime+additionalTimeTo);
-			TransportData existingData = costCache.putIfAbsent(transportDataKey, newData);
+			TransportData existingData;
+			TransportData newData;
+			if ( calculateDistance == true ){ // TODO: create enums with calculation method .
+				newData = new TransportData(path.travelCost+additionalCostTo,path.travelTime+additionalTimeTo, travelDistanceInMeter+additionalDistanceTo);
+				existingData = costCache.putIfAbsent(transportDataKey, newData);
+			} else {
+				newData = new TransportData(path.travelCost+additionalCostTo,path.travelTime+additionalTimeTo);
+				existingData = costCache.putIfAbsent(transportDataKey, newData);
+			}
+
 			ttMemorizedCounter.incCounter();
 			if(existingData == null){
 				existingData = newData;
