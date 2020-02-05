@@ -20,29 +20,109 @@
 
 package org.matsim.core.utils.misc;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.router.util.TravelTime;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 
-public class Time {
+public final class Time {
 	// yy there is now java.time, which integrates joda.time into the standard
 	// jdk.  should we consider looking into this?  kai, dec'17
-	
-	
-	private Time() {} // namespace only, do not instantiate
 
-	/** 
+	/**
 	 * Never change this to NaN, as a compare of any valid time
 	 * to this should result to "greater" for some algorithms to work
 	 * still we found the name "UNDEFINED" more suitable than TIME_MIN_VALUE
-	 * <br><b><i>Note:</i></b> do not interpret the "UNDEFINED" as "time does 
-	 * not matter", as this has implications for, example, routing. If start 
+	 * <br><b><i>Note:</i></b> do not interpret the "UNDEFINED" as "time does
+	 * not matter", as this has implications for, example, routing. If start
 	 * time is given as {@link Time#UNDEFINED_TIME} then {@link Path#travelTime}
 	 * will return {@link Double#NaN}, even though the {@link TravelTime#getLinkTravelTime}
 	 * is independent of the start time. */
 	@Deprecated // rather use Time.isUndefinedTime( time ), since that opens up the path to a later change
 	// of the convention.  kai, nov'17
 	public final static double UNDEFINED_TIME = Double.NEGATIVE_INFINITY;
+
+	private static final Time UNDEFINED = new Time(UNDEFINED_TIME);
+
+	public static Time of(double value) {
+		Preconditions.checkArgument(Double.isFinite(value));
+		return new Time(value);
+	}
+
+	public static Time undefined() {
+		return UNDEFINED;
+	}
+
+	private double value;
+
+	private Time(double value) {
+		this.value = value;
+	}
+
+	public double getValue() {
+		Preconditions.checkState(value != UNDEFINED_TIME, "Undefined time");
+		return value;
+	}
+
+	public double getOrElse(double other) {
+		return value != UNDEFINED_TIME ?  value : other;
+	}
+
+	public double getOrElseGet(DoubleSupplier supplier) {
+		return value != UNDEFINED_TIME ?  value : supplier.getAsDouble();
+	}
+
+	public <X extends Throwable> double getOrElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+		if (value != UNDEFINED_TIME) {
+			return value;
+		} else {
+			throw exceptionSupplier.get();
+		}
+	}
+
+	public boolean isDefined() {
+		return value != UNDEFINED_TIME;
+	}
+
+	public boolean isUndefined() {
+		return value == UNDEFINED_TIME;
+	}
+
+	//TODO maybe Time should be immutable?????
+	public void setValue(double value) {
+		Preconditions.checkArgument(Double.isFinite(value));
+		this.value = value;
+	}
+
+	//TODO maybe Time should be immutable?????
+	public void setUndefinedValue() {
+		this.value = UNDEFINED_TIME;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Time time = (Time)o;
+		return Double.compare(time.value, value) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return Double.hashCode(value);
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this).add("value", value).toString();
+	}
+
 	/**
 	 * The end of a day in MATSim in seconds
 	 */
@@ -51,13 +131,13 @@ public class Time {
 	public static final String TIMEFORMAT_HHMM = "HH:mm";
 	public static final String TIMEFORMAT_HHMMSS = "HH:mm:ss";
 	public static final String TIMEFORMAT_SSSS = "ssss";
-	
+
 	public static final String TIMEFORMAT_HHMMSSDOTSS = "HH:mm:ss.ss" ;
 
 	private static String defaultTimeFormat = TIMEFORMAT_HHMMSS;
 
 	private final static String[] timeElements;
-	
+
 	public static boolean isUndefinedTime( final double time ) {
 		// give the option to change the convention at some point in time.  kai, nov'17
 		return time==UNDEFINED_TIME ;
@@ -229,7 +309,7 @@ public class Time {
 
 	/**
 	 * Converts a number like 1634 to the time value of 16:34:00.
-	 * 
+	 *
 	 * @param hhmm the time-representing number to convert.
 	 * @return the time as seconds after midnight.
 	 */
