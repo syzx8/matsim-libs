@@ -216,9 +216,10 @@ public final class PopulationUtils {
 			this.delegate = act ;
 		}
 
+
 		@Override
-		public double getEndTime() {
-			return this.delegate.getEndTime() ;
+		public Time getEndTimeObject() {
+			return this.delegate.getEndTimeObject() ;
 		}
 
 		@Override

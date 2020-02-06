@@ -5,6 +5,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.contrib.freight.carrier.TimeWindow;
+import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
@@ -25,13 +26,8 @@ public class FreightActivity implements Activity {
 	}
 
 	@Override
-	public double getEndTime() {
-		return act.getEndTime();
-	}
-
-	@Override
-	public void setEndTime(double seconds) {
-		act.setEndTime(seconds);
+	public Time getEndTimeObject() {
+		return act.getEndTimeObject();
 	}
 
 	@Override

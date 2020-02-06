@@ -45,7 +45,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	// Case (X): facilityId inconsistent with linkId, coord.  Idea: mobsim takes the facilityId and (a) checks the other
 	// attribs or (b) ignores them.
 
-	private double endTime = Time.getUndefinedTime();
+	private Time endTime = Time.undefined();
 
 	/**
 	 * Used for reporting outcomes in the scoring. Not interpreted for the demand.
@@ -66,13 +66,8 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	}
 
 	@Override
-	public final double getEndTime() {
-		return this.endTime;
-	}
-
-	@Override
-	public final void setEndTime(final double endTime) {
-		this.endTime = endTime;
+	public Time getEndTimeObject() {
+		return endTime;
 	}
 
 	/**

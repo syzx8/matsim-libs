@@ -34,6 +34,7 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.core.population.PopulationUtils;
+import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
@@ -166,12 +167,8 @@ public class TripRouterTest {
 	private static class EqualsActivity implements Activity {
 		Activity delegate ;
 		@Override
-		public double getEndTime() {
-			return this.delegate.getEndTime();
-		}
-		@Override
-		public void setEndTime(double seconds) {
-			this.delegate.setEndTime(seconds);
+		public Time getEndTimeObject() {
+			return this.delegate.getEndTimeObject();
 		}
 		@Override
 		public String getType() {

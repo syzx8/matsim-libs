@@ -23,6 +23,7 @@ package org.matsim.api.core.v01.population;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 
 /**
@@ -31,9 +32,19 @@ import org.matsim.facilities.ActivityFacility;
  */
 public interface Activity extends PlanElement {
 
-	public double getEndTime();
+	default double getEndTime() {
+		return getEndTimeObject().getValue();
+	}
 
-	public void setEndTime(final double seconds);
+	default void setEndTime(final double seconds) {
+		getEndTimeObject().setValue(seconds);
+	}
+
+	default boolean isEndTimeDefined() {
+		return getEndTimeObject().isDefined();
+	}
+
+	public Time getEndTimeObject();
 
 	public String getType();
 

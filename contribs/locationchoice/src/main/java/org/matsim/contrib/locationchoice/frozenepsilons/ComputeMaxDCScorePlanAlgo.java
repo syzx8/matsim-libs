@@ -28,6 +28,7 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.contrib.locationchoice.frozenepsilons.DestinationChoiceContext.ActivityFacilityWithIndex;
 import org.matsim.core.population.algorithms.PlanAlgorithm;
+import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
@@ -101,6 +102,7 @@ class ComputeMaxDCScorePlanAlgo implements PlanAlgorithm {
 	 * cdobler, oct'15
 	 */
 	private static final class DummyActivity implements Activity {
+		private static final Time TIME_ZERO = Time.of(0);
 
 		private String type = null;
 		private Id<ActivityFacility> facilityId = null;
@@ -109,10 +111,7 @@ class ComputeMaxDCScorePlanAlgo implements PlanAlgorithm {
 		public DummyActivity(Id<Link> linkId) { this.linkId = linkId; }
 		
 		@Override
-		public double getEndTime() { return 0; }
-
-		@Override
-		public void setEndTime(double seconds) { }
+		public Time getEndTimeObject() { return TIME_ZERO; }
 
 		@Override
 		public String getType() { return this.type; }

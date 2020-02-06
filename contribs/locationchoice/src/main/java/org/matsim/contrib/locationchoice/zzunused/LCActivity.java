@@ -24,6 +24,7 @@ import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Activity;
+import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.ActivityFacility;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
@@ -41,7 +42,12 @@ class LCActivity implements Activity, LCPlanElement {
 		this.arrayIndex = arrayIndex;
 		this.planElementIndex = planElementIndex;
 	}
-	
+
+	@Override
+	public Time getEndTimeObject() {
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public final double getEndTime() {
 		return this.plan.endTimes[this.arrayIndex];
