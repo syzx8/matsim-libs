@@ -49,7 +49,7 @@ public final class Time {
 	private static final Time UNDEFINED = new Time(UNDEFINED_TIME);
 
 	public static Time of(double value) {
-		Preconditions.checkArgument(Double.isFinite(value));
+		Preconditions.checkArgument(Double.isFinite(value) || value == Double.POSITIVE_INFINITY);
 		return new Time(value);
 	}
 
